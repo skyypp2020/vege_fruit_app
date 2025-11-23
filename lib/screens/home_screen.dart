@@ -79,12 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.help),
-            label: 'Help',
+            icon: Icon(Icons.info),
+            label: 'Info',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt),
-            label: 'Camera',
+            icon: Icon(Icons.smart_toy),
+            label: 'Ask AI',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
