@@ -1,0 +1,10 @@
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/icudtl.dat
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/flutter_windows.dll
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/AssetManifest.json
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/assets/images/login_bg.png
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/FontManifest.json
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/kernel_blob.bin
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag

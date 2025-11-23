@@ -1,0 +1,10 @@
+^D:\03-NCHU\02-104-1\02 - INTERNET OF THINGS APPLICATIONS AND DATA ANALYSIS\FINALPROJECT\VEGE_FRUIT_APP\BUILD\WINDOWS\CMAKEFILES\172E1BE67E11427B3308AEC7E1E9F71D\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
