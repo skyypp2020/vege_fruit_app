@@ -148,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
+                            mainAxisSize: MainAxisSize.min, // Use min size
                             children: [
                               Checkbox(
                                 value: _rememberMe,
@@ -172,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 40,
+                                horizontal: 32, // Reduced padding slightly
                                 vertical: 12,
                               ),
                             ),
