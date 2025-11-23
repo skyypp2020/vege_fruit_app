@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'help_page.dart';
 import 'camera_page.dart';
+import 'ask_ai_page.dart';
 import 'stats_page.dart';
 import 'login_screen.dart';
 
@@ -16,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const List<Widget> _pages = <Widget>[
     HelpPage(),
-    CameraPage(),
+    AskAiPage(),
     StatsPage(),
   ];
 
