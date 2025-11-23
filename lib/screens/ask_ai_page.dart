@@ -38,9 +38,11 @@ class _AskAiPageState extends State<AskAiPage> {
     _scrollToBottom();
 
     try {
+      final url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${_apiKey.trim()}';
+      print('Requesting URL: $url'); // Debug print
+
       final response = await http.post(
-        Uri.parse(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$_apiKey'),
+        Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [
@@ -52,6 +54,9 @@ class _AskAiPageState extends State<AskAiPage> {
           ]
         }),
       );
+
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -78,12 +83,13 @@ class _AskAiPageState extends State<AskAiPage> {
       } else {
         setState(() {
           _messages.add({
-            'text': 'Error: ${response.statusCode} - ${response.reasonPhrase}',
+            'text': 'Error: ${response.statusCode} - ${response.body}', // Show body in UI for debugging
             'isUser': false,
           });
         });
       }
     } catch (e) {
+      print('Exception: $e');
       setState(() {
         _messages.add({
           'text': 'Error: $e',
