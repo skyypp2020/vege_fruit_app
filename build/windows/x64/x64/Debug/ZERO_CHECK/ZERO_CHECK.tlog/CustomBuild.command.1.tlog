@@ -1,0 +1,10 @@
+^D:\03-NCHU\02-104-1\02 - INTERNET OF THINGS APPLICATIONS AND DATA ANALYSIS\FINALPROJECT\VEGE_FRUIT_APP\BUILD\WINDOWS\X64\CMAKEFILES\F103289D4101DE477DD1E64CAFFF4374\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/windows" "-BD:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/vege_fruit_app.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

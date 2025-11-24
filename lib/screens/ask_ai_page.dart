@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class AskAiPage extends StatefulWidget {
   const AskAiPage({super.key});
@@ -19,27 +21,58 @@ class _AskAiPageState extends State<AskAiPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
 
   // TODO: Replace with your actual API Key
   static const String _apiKey = 'AIzaSyCC5p3HA2ckndAArwt2xkO2IPNm5F1oxyE';
 
   Future<void> _sendMessage() async {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    final image = _selectedImage;
+
+    if (text.isEmpty && image == null) return;
 
     setState(() {
       _messages.add({
         'text': text,
+        'image': image?.path,
         'isUser': true,
       });
       _isLoading = true;
+      _selectedImage = null;
     });
     _controller.clear();
     _scrollToBottom();
 
     try {
+      // Use gemini-2.5-flash for multimodal support
       final url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${_apiKey.trim()}';
-      print('Requesting URL: $url'); // Debug print
+      print('Requesting URL: $url');
+
+      List<Map<String, dynamic>> parts = [];
+      if (text.isNotEmpty) {
+        parts.add({'text': text});
+      }
+      if (image != null) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        parts.add({
+          'inline_data': {
+            'mime_type': 'image/jpeg',
+            'data': base64Image
+          }
+        });
+      }
 
       final response = await http.post(
         Uri.parse(url),
@@ -47,9 +80,7 @@ class _AskAiPageState extends State<AskAiPage> {
         body: jsonEncode({
           'contents': [
             {
-              'parts': [
-                {'text': text}
-              ]
+              'parts': parts
             }
           ]
         }),
@@ -83,7 +114,7 @@ class _AskAiPageState extends State<AskAiPage> {
       } else {
         setState(() {
           _messages.add({
-            'text': 'Error: ${response.statusCode} - ${response.body}', // Show body in UI for debugging
+            'text': 'Error: ${response.statusCode} - ${response.body}',
             'isUser': false,
           });
         });
@@ -162,9 +193,25 @@ class _AskAiPageState extends State<AskAiPage> {
                                   : const Radius.circular(12),
                             ),
                           ),
-                          child: Text(
-                            message['text'] as String,
-                            style: const TextStyle(fontSize: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (message['image'] != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Image.file(
+                                    File(message['image']),
+                                    height: 200,
+                                    width: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              if (message['text'] != null && message['text'].toString().isNotEmpty)
+                                Text(
+                                  message['text'] as String,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                            ],
                           ),
                         ),
                       ),
@@ -198,32 +245,65 @@ class _AskAiPageState extends State<AskAiPage> {
                 ),
               ],
             ),
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: '輸入訊息...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
+                if (_selectedImage != null)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: [
+                        Image.file(_selectedImage!, height: 100),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _selectedImage = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                      onPressed: _isLoading ? null : () => _pickImage(ImageSource.camera),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.image, color: Colors.blue),
+                      onPressed: _isLoading ? null : () => _pickImage(ImageSource.gallery),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          hintText: '輸入訊息...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                        ),
+                        onSubmitted: (_) => _sendMessage(),
+                        enabled: !_isLoading,
                       ),
                     ),
-                    onSubmitted: (_) => _sendMessage(),
-                    enabled: !_isLoading,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.blue),
-                  onPressed: _isLoading ? null : _sendMessage,
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.send, color: Colors.blue),
+                      onPressed: _isLoading ? null : _sendMessage,
+                    ),
+                  ],
                 ),
               ],
             ),

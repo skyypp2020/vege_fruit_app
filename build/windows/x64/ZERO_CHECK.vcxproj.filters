@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\03-NCHU\02-104-1\02 - Internet of Things Applications and Data Analysis\finalproject\vege_fruit_app\build\windows\x64\CMakeFiles\f103289d4101de477dd1e64cafff4374\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{259E5A2A-6334-3BB6-9949-5B6020702BE4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
