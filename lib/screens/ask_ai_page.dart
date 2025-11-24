@@ -33,8 +33,8 @@ class _AskAiPageState extends State<AskAiPage> {
     }
   }
 
-  // TODO: Replace with your actual API Key
-  static const String _apiKey = 'AIzaSyCC5p3HA2ckndAArwt2xkO2IPNm5F1oxyE';
+  // TODO: Replace with your actual n8n Webhook URL
+  static const String _webhookUrl = 'https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e3';
 
   Future<void> _sendMessage() async {
     final text = _controller.text.trim();
@@ -55,48 +55,30 @@ class _AskAiPageState extends State<AskAiPage> {
     _scrollToBottom();
 
     try {
-      // Use gemini-2.5-flash for multimodal support
-      final url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${_apiKey.trim()}';
-      print('Requesting URL: $url');
-
-      List<Map<String, dynamic>> parts = [];
+      var request = http.MultipartRequest('POST', Uri.parse(_webhookUrl));
+      
+      // Add text field
       if (text.isNotEmpty) {
-        parts.add({'text': text});
-      }
-      if (image != null) {
-        List<int> imageBytes = await image.readAsBytes();
-        String base64Image = base64Encode(imageBytes);
-        parts.add({
-          'inline_data': {
-            'mime_type': 'image/jpeg',
-            'data': base64Image
-          }
-        });
+        request.fields['text'] = text;
       }
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'contents': [
-            {
-              'parts': parts
-            }
-          ]
-        }),
-      );
+      // Add image file
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('files', image.path));
+      }
+
+      // Send request
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
       print('Response Status: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        if (data['candidates'] != null &&
-            data['candidates'].isNotEmpty &&
-            data['candidates'][0]['content'] != null &&
-            data['candidates'][0]['content']['parts'] != null &&
-            data['candidates'][0]['content']['parts'].isNotEmpty) {
-          final aiText = data['candidates'][0]['content']['parts'][0]['text'];
+        // n8n returns { "output": "AI response..." }
+        if (data['output'] != null) {
+          final aiText = data['output'];
           setState(() {
             _messages.add({
               'text': aiText,
@@ -106,7 +88,7 @@ class _AskAiPageState extends State<AskAiPage> {
         } else {
            setState(() {
             _messages.add({
-              'text': 'No response from AI.',
+              'text': 'Received response but no output field found.',
               'isUser': false,
             });
           });
