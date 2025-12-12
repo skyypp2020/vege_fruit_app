@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'help_page.dart';
+import 'info_page.dart';
 import 'camera_page.dart';
 import 'ask_ai_page.dart';
 import 'stats_page.dart';
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
-    HelpPage(),
+    InfoPage(),
     AskAiPage(),
     StatsPage(),
   ];
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('智慧飲食健康管理系統'),
         actions: [
           GestureDetector(
             onTap: _showLogoutDialog,
