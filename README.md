@@ -39,6 +39,28 @@
 
 ---
 
+## 專案結構 (Project Structure)
+
+```text
+vege_fruit_app/
+├── android/       # Android 原生代碼
+├── assets/        # 靜態資源 (圖片等)
+├── ios/           # iOS 原生代碼
+├── lib/           # Flutter 應用程式主要程式碼
+│   ├── screens/   # 介面 (UI) 相關檔案
+│   │   ├── ask_ai_page.dart
+│   │   ├── camera_page.dart
+│   │   ├── help_page.dart
+│   │   ├── home_screen.dart
+│   │   ├── login_screen.dart
+│   │   └── stats_page.dart
+│   └── main.dart  # 程式進入點
+├── web/           # Web 相關代碼
+├── windows/       # Windows 原生代碼
+├── pubspec.yaml   # 專案依賴與設定
+└── README.md      # 專案說明文件
+```
+
 ## 快速開始 (Getting Started)
 
 本專案是 Flutter 應用程式的起點。
