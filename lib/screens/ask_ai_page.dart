@@ -34,8 +34,10 @@ class _AskAiPageState extends State<AskAiPage> {
   }
 
   // TODO: Replace with your actual n8n Webhook URL
-  // static const String _webhookUrl = 'https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e3';
-  static const String _webhookUrl = 'https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e355';
+  // 期末專案的n8n
+  static const String _webhookUrl = 'https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e3';
+  // 自己測試的n8n
+  // static const String _webhookUrl = 'https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e355';
 
   Future<void> _sendMessage() async {
     final text = _controller.text.trim();
