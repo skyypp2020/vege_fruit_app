@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
 class AskAiPageTest extends StatefulWidget {
@@ -21,14 +21,14 @@ class _AskAiPageTestState extends State<AskAiPageTest> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-  File? _selectedImage;
+  XFile? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _selectedImage = File(pickedFile.path);
+        _selectedImage = pickedFile;
       });
     }
   }
@@ -42,10 +42,15 @@ class _AskAiPageTestState extends State<AskAiPageTest> {
 
     if (text.isEmpty && image == null) return;
 
+    Uint8List? imageBytes;
+    if (image != null) {
+      imageBytes = await image.readAsBytes();
+    }
+
     setState(() {
       _messages.add({
         'text': text,
-        'image': image?.path,
+        'image': imageBytes,
         'isUser': true,
       });
       _isLoading = true;
@@ -62,9 +67,12 @@ class _AskAiPageTestState extends State<AskAiPageTest> {
         request.fields['text'] = text;
       }
 
-      // Add image file
-      if (image != null) {
-        request.files.add(await http.MultipartFile.fromPath('files', image.path));
+      if (image != null && imageBytes != null) {
+        request.files.add(http.MultipartFile.fromBytes(
+          'files',
+          imageBytes,
+          filename: image.name,
+        ));
       }
 
       // Send request
@@ -181,8 +189,8 @@ class _AskAiPageTestState extends State<AskAiPageTest> {
                               if (message['image'] != null)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Image.file(
-                                    File(message['image']),
+                                  child: Image.memory(
+                                    message['image'] as Uint8List,
                                     height: 200,
                                     width: 200,
                                     fit: BoxFit.cover,
@@ -229,12 +237,20 @@ class _AskAiPageTestState extends State<AskAiPageTest> {
             ),
             child: Column(
               children: [
-                if (_selectedImage != null)
+                  if (_selectedImage != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Stack(
                       children: [
-                        Image.file(_selectedImage!, height: 100),
+                        FutureBuilder<Uint8List>(
+                          future: _selectedImage!.readAsBytes(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Image.memory(snapshot.data!, height: 100);
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        ),
                         Positioned(
                           right: 0,
                           top: 0,

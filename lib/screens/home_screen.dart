@@ -93,13 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.bar_chart),
             label: 'Statistics',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bug_report),
-            label: 'Test',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.bug_report),
+          //   label: 'Test',
+          // ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: Colors.green[800], // Dark Green for selected
+        unselectedItemColor: Colors.lightGreen, // Light Green for unselected
         onTap: _onItemTapped,
       ),
     );

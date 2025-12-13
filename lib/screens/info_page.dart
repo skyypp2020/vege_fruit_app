@@ -44,14 +44,15 @@ class InfoPage extends StatelessWidget {
                 role: 'Professor',
                 color: Colors.teal,
                 alignment: CrossAxisAlignment.end,
+                imagePath: 'assets/images/chenhuan.jpg',
               ),
             ),
             const SizedBox(height: 40),
 
             // Members Section (Staggered)
-            _buildMemberItem('洪靖倫', 0, Colors.blueAccent),
-            _buildMemberItem('羅雅馨', 1, Colors.pinkAccent),
-            _buildMemberItem('楊竣博', 2, Colors.purpleAccent),
+            _buildMemberItem('洪靖倫', 0, Colors.blueAccent, imagePath: 'assets/images/jinglun.jpg'),
+            _buildMemberItem('羅雅馨', 1, Colors.pinkAccent, imagePath: 'assets/images/yaxin.jpg'),
+            _buildMemberItem('楊竣博', 2, Colors.purpleAccent, imagePath: 'assets/images/junbo.jpg'),
             _buildMemberItem('林智堅', 3, Colors.deepOrangeAccent, imagePath: 'assets/images/zhijian.jpg'),
             
              const SizedBox(height: 40),
