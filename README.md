@@ -54,9 +54,10 @@ vege_fruit_app/
 ├── lib/           # Flutter 應用程式主要程式碼
 │   ├── screens/   # 介面 (UI) 相關檔案
 │   │   ├── ask_ai_page.dart
+│   │   ├── ask_ai_page_test.dart
 │   │   ├── camera_page.dart
-│   │   ├── help_page.dart
 │   │   ├── home_screen.dart
+│   │   ├── info_page.dart
 │   │   ├── login_screen.dart
 │   │   └── stats_page.dart
 │   └── main.dart  # 程式進入點

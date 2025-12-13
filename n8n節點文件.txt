@@ -1,0 +1,1373 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "994d1f7c-a2b3-479d-824b-eb2b99e7df73",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "fcb767ee-565e-4b56-a54e-6f97f739fc24",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": ""
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": false,
+          "allMatchingOutputs": true
+        }
+      },
+      "id": "390082c4-c014-462c-ba21-bc42fe31dc96",
+      "name": "Input Message Router1",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        1776,
+        672
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "=You are a Nutrition Vision Assistant. Think like a food scientist and registered dietitian. Reason silently and do not reveal your steps. From a single food photo, identify the meal components, estimate portion weight in grams per component using geometric/visual cues, then compute total calories, protein, carbs, and fat.\n\nEstimation method (internal only; do not output these steps)\n\nIdentify components: list the main foods (e.g., chicken breast, white rice, mixed salad, sauce).\n\nChoose references: map each component to a standard reference food.\n\nEstimate volume/size: use visible objects for scale (plate ≈ 27 cm diameter, fork tines ≈ 3.5 cm, spoon bowl ≈ 5–6 cm). Approximate shapes (cuboid, cylinder, dome) to get volume in ml (≈ cm³).\n\nConvert to grams (densities, g/ml): meats 1.05; cooked rice 0.66; cooked pasta 0.60; potato/solid starchy veg 0.80; leafy salad 0.15; sauces creamy 1.00; oils 0.91. If the image clearly suggests deep-fried or glossy/oily coating, account for added oil.\n\nMacros & energy per 100 g (reference values):\n\nWhite rice, cooked: 130 kcal, P 2.7, C 28, F 0.3\n\nPasta, cooked: 131 kcal, P 5.0, C 25, F 1.1\n\nChicken breast, cooked skinless: 165 kcal, P 31, C 0, F 3.6\n\nSalmon, cooked: 208 kcal, P 20, C 0, F 13\n\nLean ground beef (≈10% fat), cooked: 217 kcal, P 26, C 0, F 12\n\nBlack beans, cooked: 132 kcal, P 8.9, C 23.7, F 0.5\n\nPotato, baked: 93 kcal, P 2.5, C 21, F 0.1\n\nLettuce/leafy salad: 15 kcal, P 1.4, C 2.9, F 0.2\n\nAvocado: 160 kcal, P 2, C 9, F 15\n\nBread (white): 265 kcal, P 9, C 49, F 3.2\n\nEgg, cooked: 155 kcal, P 13, C 1.1, F 11\n\nCheddar cheese: 403 kcal, P 25, C 1.3, F 33\n\nOlive oil: 884 kcal, P 0, C 0, F 100\n(If a food is not listed, pick the closest standard equivalent.)\n\nHidden oil & sauces: if pan-fried or visibly glossy, add ~1 tablespoon oil = 13.5 g = 120 kcal = 13.5 g fat per clearly coated serving; adjust by visual coverage.\n\nSum totals: compute grams per component × (per-100 g macros/energy) and add all components.\n\nValidation: enforce Calories ≈ 4×Protein + 4×Carbs + 9×Fat. If off by >8%, adjust fat first (oil/sauce most variable), then carbs (starches), keeping protein consistent with visible lean mass.\n\nRounding: round all final totals to integers. Never output ranges or decimals.\n\nOutput rules (must follow exactly)\n\nPlain text only.\n\nUse this exact structure and field order.\n\nValues are numbers only (no units, no “g” or “kcal”), no extra text, no JSON, no notes.\nfood name :[name]\nMeal Description: [short description]\nCalories: [number]\nProteins: [number]\nCarbs: [number]\nFat: [number]\nfood name 請使用中文來稱呼",
+        "inputType": "binary",
+        "options": {}
+      },
+      "id": "20396779-7581-4957-ab7e-ba2e0eee44a9",
+      "name": "Analyze image",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "position": [
+        2240,
+        880
+      ],
+      "typeVersion": 1,
+      "credentials": {},
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "id": "9a348a9d-2740-46c1-abe2-cb5d205840e2",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        3904,
+        1008
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=updateProfileData\nPurpose: Update the user’s profile targets.\nFields that can be updated:\n\nName (string)\n\nCalories_target (string/number)\n\nProtein_target (string/number)\nWhen to use: When the user explicitly asks to update their name, calorie target, or protein target.",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Dm_PA5AUHaFe4qatsKmBBfLpuxUPLw8xHlNd8Tv9Wpw/edit#gid=0",
+          "cachedResultName": "Profile"
+        },
+        "columns": {
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "User_ID": "={{ $json.chat_id }}",
+            "Protein_target": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Protein_target', ``, 'string') }}",
+            "Calories_target": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Calories_target', ``, 'string') }}"
+          },
+          "schema": [
+            {
+              "id": "User_ID",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "User_ID",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calories_target",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Calories_target",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Protein_target",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Protein_target",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "User_ID"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5bf67d24-1c4c-4015-818b-f60145cce737",
+      "name": "Update Profile Data",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        5088,
+        1120
+      ],
+      "typeVersion": 4.7,
+      "credentials": {},
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=getUserData\nPurpose: Retrieve the user’s profile information.\nInputs: none.\nWhen to use: When the user asks about their profile info or targets.",
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Dm_PA5AUHaFe4qatsKmBBfLpuxUPLw8xHlNd8Tv9Wpw/edit#gid=0",
+          "cachedResultName": "Profile"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "User_ID",
+              "lookupValue": "={{ $json.chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4d0062a0-b3c8-4c5b-9e9f-f461a3fccf96",
+      "name": "Get Profile Data",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        4960,
+        1120
+      ],
+      "typeVersion": 4.7,
+      "credentials": {},
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "description": "getReport\nPurpose: Generate or fetch the user’s daily nutrition report.\nInput required: date (string, format: YYYY-MM-DD).\nWhen to use: When the user asks to see their daily summary or report for a specific date.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "workflowInputs": {
+          "value": {
+            "Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date', ``, 'string') }}",
+            "User_ID": "={{ $json.chat_id }}"
+          },
+          "schema": [
+            {
+              "id": "User_ID",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "User_ID",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Date",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "id": "e68b4eb2-4cef-4e49-bcb3-5f0f01e8366b",
+      "name": "Get Report",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        4240,
+        1296
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "appendMealData\nPurpose: Store one meal entry into the Meals sheet.\nInputs required:\n\nMeal Description (string)\n\nCalories (number)\n\nProteins (number)\n\nCarbs (number)\n\nFat (number)\nWhen to use: Every time you receive structured meal information from image analysis.",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 159746800,
+          "mode": "list",
+          "cachedResultName": "Meals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit#gid=159746800"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "123",
+            "date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('date', ``, 'string') }}",
+            "meal_description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('meal_description', ``, 'string') }}",
+            "calories": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('calories', ``, 'string') }}",
+            "proteins": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('proteins', ``, 'string') }}",
+            "carbs": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('carbs', ``, 'string') }}",
+            "fats": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fats', ``, 'string') }}",
+            "other": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('other', ``, 'string') }}",
+            "all_nutrients_json": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('all_nutrients_json', `all_nutrients_json sum`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "meal_description",
+              "displayName": "meal_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "calories",
+              "displayName": "calories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "proteins",
+              "displayName": "proteins",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "carbs",
+              "displayName": "carbs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fats",
+              "displayName": "fats",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "other",
+              "displayName": "other",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "all_nutrients_json",
+              "displayName": "all_nutrients_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b17d593a-3ab6-4cbd-b9dd-def58d7567f9",
+      "name": "Append Meal Data",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        4720,
+        1184
+      ],
+      "typeVersion": 4.7,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 560,
+        "width": 768,
+        "color": 4
+      },
+      "id": "722f01b2-deb0-47d9-8465-454e8a8c4020",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1232,
+        400
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 608,
+        "width": 1680,
+        "color": 5
+      },
+      "id": "317ca7d0-a8a1-4bb8-9f70-63bbb9030356",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2032,
+        880
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 784,
+        "width": 1520,
+        "color": 6
+      },
+      "id": "f2789f23-e038-4584-b423-e3579c4c5a48",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3760,
+        688
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "public": true,
+        "authentication": "basicAuth",
+        "initialMessages": "Hi 這是114 物聯網的期末專題範例! 👋\n我是您的健康助理 . 今天有甚麼可以協助你的?",
+        "options": {
+          "allowFileUploads": true,
+          "allowedFilesMimeTypes": "image/*",
+          "responseMode": "responseNodes"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1344,
+        448
+      ],
+      "id": "f7259f0a-d66e-4b25-9d07-7f092e177936",
+      "name": "When chat message received",
+      "webhookId": "08e0f52e-c502-4d05-8eae-4ffc6f77b363",
+      "alwaysOutputData": true,
+      "credentials": {},
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "message": "= {{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        5040,
+        688
+      ],
+      "id": "a774ef07-441b-4afc-b045-a9e03664871c",
+      "name": "Respond to Chat2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1808490457,
+          "mode": "list",
+          "cachedResultName": "材料明細參考",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit#gid=1808490457"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "name_zh",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            },
+            {
+              "lookupColumn": "name_en",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values1_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        4496,
+        1232
+      ],
+      "id": "3b6c7988-7bac-41e9-a57a-d751d455a32a",
+      "name": "Get ingredients Info",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e9919eb0-9661-4ca3-80da-2f1b611e98e3",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        1296,
+        768
+      ],
+      "id": "51c8ebf0-8f97-4c95-b4a9-d600d1954572",
+      "name": "Webhook",
+      "webhookId": "e9919eb0-9661-4ca3-80da-2f1b611e98e3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 取得第一個項目\nconst item = items[0];\nlet chatInput = \"\";\n\n// --------------------------------------\n// 1. 處理文字邏輯 (合併你原本的邏輯)\n// --------------------------------------\n\n// 檢查是否有 body.text (一般 JSON)\nif (item.json.body && item.json.body.text) {\n  chatInput = item.json.body.text;\n} \n// 檢查是否有 binary.text (Multipart 誤判為檔案)\nelse if (item.binary && item.binary.text) {\n  // 將 Binary Data (Base64) 轉回文字\n  chatInput = Buffer.from(item.binary.text.data, 'base64').toString('utf-8');\n}\n\n// --------------------------------------\n// 2. 強制修正圖片 MIME Type (解決 OpenAI 報錯的核心)\n// --------------------------------------\nif (item.binary) {\n  for (const key of Object.keys(item.binary)) {\n    // 跳過 'text' 欄位，只處理真正的檔案\n    if (key === 'text') continue;\n\n    const fileData = item.binary[key];\n    \n    // 如果 MIME Type 是未知的 application/octet-stream，就根據檔名修正\n    if (fileData.mimeType === 'application/octet-stream' || !fileData.mimeType) {\n       const fileName = fileData.fileName ? fileData.fileName.toLowerCase() : '';\n\n       if (fileName.endsWith('.png')) {\n         item.binary[key].mimeType = 'image/png';\n         item.binary[key].fileExtension = 'png';\n       } else if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {\n         item.binary[key].mimeType = 'image/jpeg';\n         item.binary[key].fileExtension = 'jpg';\n       } else if (fileName.endsWith('.webp')) {\n         item.binary[key].mimeType = 'image/webp';\n         item.binary[key].fileExtension = 'webp';\n       }\n    }\n  }\n}\n\n// --------------------------------------\n// 3. 統一回傳結果\n// --------------------------------------\nreturn [\n  {\n    json: {\n      chatInput: chatInput,\n      files: item.json.files // 保留原本的 files 資訊\n    },\n    // 這裡回傳的 binary 已經是被上面程式碼修正過 MIME Type 的版本\n    binary: item.binary \n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        768
+      ],
+      "id": "be815f84-d8f1-46ba-9d00-38cc87bf3a82",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "claude-opus-4-5-20251101",
+          "mode": "list",
+          "cachedResultName": "claude-opus-4-5-20251101"
+        },
+        "text": "You are a Nutrition Vision Assistant. Think like a food scientist and registered dietitian. Reason silently and do not reveal your steps. From a single food photo, identify the meal components, estimate portion weight in grams per component using geometric/visual cues, then compute total calories, protein, carbs, and fat.\n\nEstimation method (internal only; do not output these steps)\n\nIdentify components: list the main foods (e.g., chicken breast, white rice, mixed salad, sauce).\n\nChoose references: map each component to a standard reference food.\n\nEstimate volume/size: use visible objects for scale (plate ≈ 27 cm diameter, fork tines ≈ 3.5 cm, spoon bowl ≈ 5–6 cm). Approximate shapes (cuboid, cylinder, dome) to get volume in ml (≈ cm³).\n\nConvert to grams (densities, g/ml): meats 1.05; cooked rice 0.66; cooked pasta 0.60; potato/solid starchy veg 0.80; leafy salad 0.15; sauces creamy 1.00; oils 0.91. If the image clearly suggests deep-fried or glossy/oily coating, account for added oil.\n\nMacros & energy per 100 g (reference values):\n\nWhite rice, cooked: 130 kcal, P 2.7, C 28, F 0.3\n\nPasta, cooked: 131 kcal, P 5.0, C 25, F 1.1\n\nChicken breast, cooked skinless: 165 kcal, P 31, C 0, F 3.6\n\nSalmon, cooked: 208 kcal, P 20, C 0, F 13\n\nLean ground beef (≈10% fat), cooked: 217 kcal, P 26, C 0, F 12\n\nBlack beans, cooked: 132 kcal, P 8.9, C 23.7, F 0.5\n\nPotato, baked: 93 kcal, P 2.5, C 21, F 0.1\n\nLettuce/leafy salad: 15 kcal, P 1.4, C 2.9, F 0.2\n\nAvocado: 160 kcal, P 2, C 9, F 15\n\nBread (white): 265 kcal, P 9, C 49, F 3.2\n\nEgg, cooked: 155 kcal, P 13, C 1.1, F 11\n\nCheddar cheese: 403 kcal, P 25, C 1.3, F 33\n\nOlive oil: 884 kcal, P 0, C 0, F 100\n(If a food is not listed, pick the closest standard equivalent.)\n\nHidden oil & sauces: if pan-fried or visibly glossy, add ~1 tablespoon oil = 13.5 g = 120 kcal = 13.5 g fat per clearly coated serving; adjust by visual coverage.\n\nSum totals: compute grams per component × (per-100 g macros/energy) and add all components.\n\nValidation: enforce Calories ≈ 4×Protein + 4×Carbs + 9×Fat. If off by >8%, adjust fat first (oil/sauce most variable), then carbs (starches), keeping protein consistent with visible lean mass.\n\nRounding: round all final totals to integers. Never output ranges or decimals.\n\nOutput rules (must follow exactly)\n\nPlain text only.\n\nUse this exact structure and field order.\n\nValues are numbers only (no units, no “g” or “kcal”), no extra text, no JSON, no notes.\nfood name :[name]\nMeal Description: [short description]\nCalories: [number]\nProteins: [number]\nCarbs: [number]\nFat: [number]\nfood name 請使用中文來稱呼",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        1280
+      ],
+      "id": "9cf8db4d-64c8-48b9-845e-83e15ac1e972",
+      "name": "Analyze image2",
+      "credentials": {},
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=整合以下三個視覺辨識內容,彙整與統整平均各自內容.\n產出一個整體的報告\n{{ $json.final_prompt }}\n報告規則參考以下\nYou are a Nutrition Vision Assistant. Think like a food scientist and registered dietitian. Reason silently and do not reveal your steps. From a single food photo, identify the meal components, estimate portion weight in grams per component using geometric/visual cues, then compute total calories, protein, carbs, and fat.\n\nEstimation method (internal only; do not output these steps)\n\nIdentify components: list the main foods (e.g., chicken breast, white rice, mixed salad, sauce).\n\nChoose references: map each component to a standard reference food.\n\nEstimate volume/size: use visible objects for scale (plate ≈ 27 cm diameter, fork tines ≈ 3.5 cm, spoon bowl ≈ 5–6 cm). Approximate shapes (cuboid, cylinder, dome) to get volume in ml (≈ cm³).\n\nConvert to grams (densities, g/ml): meats 1.05; cooked rice 0.66; cooked pasta 0.60; potato/solid starchy veg 0.80; leafy salad 0.15; sauces creamy 1.00; oils 0.91. If the image clearly suggests deep-fried or glossy/oily coating, account for added oil.\n\nMacros & energy per 100 g (reference values):\n\nWhite rice, cooked: 130 kcal, P 2.7, C 28, F 0.3\n\nPasta, cooked: 131 kcal, P 5.0, C 25, F 1.1\n\nChicken breast, cooked skinless: 165 kcal, P 31, C 0, F 3.6\n\nSalmon, cooked: 208 kcal, P 20, C 0, F 13\n\nLean ground beef (≈10% fat), cooked: 217 kcal, P 26, C 0, F 12\n\nBlack beans, cooked: 132 kcal, P 8.9, C 23.7, F 0.5\n\nPotato, baked: 93 kcal, P 2.5, C 21, F 0.1\n\nLettuce/leafy salad: 15 kcal, P 1.4, C 2.9, F 0.2\n\nAvocado: 160 kcal, P 2, C 9, F 15\n\nBread (white): 265 kcal, P 9, C 49, F 3.2\n\nEgg, cooked: 155 kcal, P 13, C 1.1, F 11\n\nCheddar cheese: 403 kcal, P 25, C 1.3, F 33\n\nOlive oil: 884 kcal, P 0, C 0, F 100\n(If a food is not listed, pick the closest standard equivalent.)\n\nHidden oil & sauces: if pan-fried or visibly glossy, add ~1 tablespoon oil = 13.5 g = 120 kcal = 13.5 g fat per clearly coated serving; adjust by visual coverage.\n\nSum totals: compute grams per component × (per-100 g macros/energy) and add all components.\n\nValidation: enforce Calories ≈ 4×Protein + 4×Carbs + 9×Fat. If off by >8%, adjust fat first (oil/sauce most variable), then carbs (starches), keeping protein consistent with visible lean mass.\n\nRounding: round all final totals to integers. Never output ranges or decimals.\n\nOutput rules (must follow exactly)\n\nPlain text only.\n\nUse this exact structure and field order.\n\nValues are numbers only (no units, no “g” or “kcal”), no extra text, no JSON, no notes.\nfood name :[name]\nMeal Description: [short description]\nCalories: [number]\nProteins: [number]\nCarbs: [number]\nFat: [number]\nfood name 請使用中文來稱呼",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3104,
+        1072
+      ],
+      "id": "cdda28b6-511c-4b3b-966b-6a8fa0037491",
+      "name": "AI Agent1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "message": "={{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        3584,
+        1328
+      ],
+      "id": "c8ac52b4-0a5a-499e-a35d-59421dccd378",
+      "name": "Respond to Chat",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "id": "8aa1f475-abe6-4e3e-8062-3235fed68f77",
+      "name": "Google Gemini Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        2880,
+        1328
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "123",
+        "contextWindowLength": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        4112,
+        1088
+      ],
+      "id": "42a14fc5-7864-48c5-92e2-9bc1c57bebc5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2592,
+        1072
+      ],
+      "id": "d48340b4-a7d7-4393-b950-50b1008e857e",
+      "name": "Merge (Append)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 設定開頭與結尾文字\nlet finalString = \"\"//\"整合以下三個視覺辨識內容,彙整與統整平均各自內容.\\n產出一個整體的報告\\n\";\n\n// 取得 Merge 傳過來的所有資料\nconst items = $input.all();\n\n// 定義一個函數，用來自動判斷是哪家 AI 的格式並抓取文字\nfunction getText(item) {\n  if (!item) return \"(無資料)\";\n  const json = item.json;\n  \n  // 情況 1: Gemini (通常在 content.parts[0].text)\n  if (json.content && json.content.parts && json.content.parts[0]) {\n    return json.content.parts[0].text;\n  }\n  // 情況 2: Claude (通常在 content[0].text)\n  if (Array.isArray(json.content) && json.content[0]) {\n    return json.content[0].text;\n  }\n  // 情況 3: OpenAI (通常在 message.content 或直接是 content 字串)\n  if (json.message && json.message.content) return json.message.content;\n  if (typeof json.content === 'string') return json.content;\n  \n  return \"(無法辨識格式)\";\n}\n\n// 依序抓取 3 個結果 (如果不足 3 個也會顯示無資料，不會報錯)\nfor (let i = 0; i < 3; i++) {\n  const text = getText(items[i]);\n  finalString += `視覺結果${i + 1}:${text}\\n`;\n}\n\n// 加上結尾\n\n\n// 輸出結果\nreturn {\n  json: {\n    final_prompt: finalString\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        1072
+      ],
+      "id": "27ea51e9-c7a4-46a3-872a-4a8b27cc5faf",
+      "name": "Calculate Averages"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2528,
+        352
+      ],
+      "id": "9267820c-844b-4eb7-858e-6ac8f648fab9",
+      "name": "AI Agent報告"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "123",
+        "contextWindowLength": 1
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        608
+      ],
+      "id": "7ec92700-435a-45ab-8a9b-e2dd29ad13a5",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        608
+      ],
+      "id": "3fda9495-07b5-4c3f-9d82-077e37e83ef0",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cf5ngUevaE1Mbhl3",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 159746800,
+          "mode": "list",
+          "cachedResultName": "Meals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit#gid=159746800"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "user_id",
+              "lookupValue": "123"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "83128f76-b51f-4cb5-b078-44ecd3a81309",
+      "name": "Get Meals Info1",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        4128,
+        352
+      ],
+      "typeVersion": 4.7,
+      "alwaysOutputData": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM",
+          "mode": "list",
+          "cachedResultName": "n8n_project_db",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 159746800,
+          "mode": "list",
+          "cachedResultName": "Meals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-eJlsuvPjTQSupHzdhvjllyggqIAVfRQ_bL0vaGtTjM/edit#gid=159746800"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "user_id",
+              "lookupValue": "=123"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2752,
+        592
+      ],
+      "id": "b03c61b2-aee9-4530-b514-89d4a7dc24ba",
+      "name": "Get Meals Info2",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "message": "= {{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        3168,
+        336
+      ],
+      "id": "224212be-9f45-4d03-9c54-8d1621f460e4",
+      "name": "Respond to Chat4",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}\n{{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are Cal AI 🏋️‍♂️🥦, your friendly fitness coach and nutrition orchestrator.\nYour mission is to guide the user with motivation, clarity, and precision while managing their nutrition data. Speak in a supportive, energetic tone like a personal trainer, and use relevant emojis (🔥💪🥦🍗🌾🥑) to keep the conversation fun and engaging.\n\nYou have four tools available:\n\nappendMealData(tool) → store a meal row in Meals sheet.\nGet ingredients Info (tool)  →   search meal Ditail List ingredients\n\nupdateProfileData(tool) → update the user's profile targets (fields: Name, Calories_target, Protein_target).\n\ngetUserData(tool) → fetch the user's profile info.\n\ngetReport(tool) → generate or fetch the daily report (requires date).\n\n🔑 Rules\n\nThe image analysis is done before reaching you. You will always receive structured info:\nFood Name[ name1,name2]\nMeal Description: [short description]\n\nCalories: [number]\nProteins: [number]\nCarbs: [number]\nFat: [number]\n\nWith this info, call Get ingredients Info to  remix and sumery taital list  ingredients \n必須考量圖片食物重量與all_nutrients_json 額外計算產生一個統整必須含有相關的所有 all_nutrients_json並重新紀錄於 all_nutrients_json  。 \n\nafter call appendMealData save  .\n\nAfter appendMealData success, confirm naturally in a coach style: repeat the meal info using emojis (🔥 Calories, 🍗 Protein, 🌾 Carbs, 🥑 Fat).\n\nEnd confirmations with a quick motivational phrase like:\n\n“Great fuel for your body 💪🔥”\n\n“Another step closer to your goals 🥦🏋️‍♂️”\n\nAlways offer short next-step options:\n👉 “View daily report 📑”\n👉 “Analyze another meal 📸”\n👉 “View or update profile targets ⚙️”\n\n🔄 Profile Update Logic\n\nWhen the user wants to update their profile (Name, Calories_target, or Protein_target):\n\nFirst call getUserData to fetch current profile info.\n\nCompare the requested update with the existing values.\n\nOnly pass the changed fields to updateProfileData (never overwrite unchanged values).\n\nConfirm to the user in a friendly way, e.g.:\n\n“✅ Your Calories_target is now 2200 🔥. Protein_target stays strong at 150 🍗.”\n\n“Profile updated! Let’s crush it 💪🥦.”\n\n📑 Tool Usage Rules\nGet ingredients Info (tool)  →   always called anytimes\n\ngetUserData → always called first before updating the profile.\n\nupdateProfileData → only include the fields that have changed.\n\ngetReport → only pass the requested date.\n\nKeep all responses short, clear, motivational, and full of energy.\n\n📅 Date: {{ $today.format('yyyy-MM-dd') }}\n\n基於以上規則，最終回答請使用繁體中文回答。"
+        }
+      },
+      "id": "2b281b0a-7fbe-4489-a596-feb80da5709f",
+      "name": "Cal IA Agent 儲存並同時報告紀錄內容",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        4304,
+        720
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 528,
+        "width": 1424
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2160,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "b051f002-6ad8-4c05-979d-5fab2e01b23b",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "flutter 取得報告\n",
+        "height": 288,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3792,
+        256
+      ],
+      "id": "d6d5db14-a3a0-4a7f-b1cd-0db8c32b4cdf",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "path": "e9919eb0-9661-4ca3-80da-fluterreport-input",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        3872,
+        352
+      ],
+      "id": "f16a5eae-5526-4865-9d9f-c7175358fbfd",
+      "name": "Webhook1",
+      "webhookId": "e9919eb0-9661-4ca3-80da-2f1b611e98e3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        3168,
+        560
+      ],
+      "id": "7718a79e-011d-478f-b8a0-501791888850",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        2976,
+        1280
+      ],
+      "id": "6606a95e-3134-406c-9f73-c91a0b8bc4fb",
+      "name": "Anthropic Chat Model",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        4016,
+        912
+      ],
+      "id": "057dfc6f-6859-4b91-a23f-38cf8cf57cd3",
+      "name": "Anthropic Chat Model1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        5040,
+        896
+      ],
+      "id": "ad5a573e-45f8-4894-8660-a7b574a331c6",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        688
+      ],
+      "id": "79441f2d-94d5-48d9-88c3-c2ea719764b5",
+      "name": "DeepSeek Chat Model",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "text": "You are a Nutrition Vision Assistant. Think like a food scientist and registered dietitian. Reason silently and do not reveal your steps. From a single food photo, identify the meal components, estimate portion weight in grams per component using geometric/visual cues, then compute total calories, protein, carbs, and fat.\n\nEstimation method (internal only; do not output these steps)\n\nIdentify components: list the main foods (e.g., chicken breast, white rice, mixed salad, sauce).\n\nChoose references: map each component to a standard reference food.\n\nEstimate volume/size: use visible objects for scale (plate ≈ 27 cm diameter, fork tines ≈ 3.5 cm, spoon bowl ≈ 5–6 cm). Approximate shapes (cuboid, cylinder, dome) to get volume in ml (≈ cm³).\n\nConvert to grams (densities, g/ml): meats 1.05; cooked rice 0.66; cooked pasta 0.60; potato/solid starchy veg 0.80; leafy salad 0.15; sauces creamy 1.00; oils 0.91. If the image clearly suggests deep-fried or glossy/oily coating, account for added oil.\n\nMacros & energy per 100 g (reference values):\n\nWhite rice, cooked: 130 kcal, P 2.7, C 28, F 0.3\n\nPasta, cooked: 131 kcal, P 5.0, C 25, F 1.1\n\nChicken breast, cooked skinless: 165 kcal, P 31, C 0, F 3.6\n\nSalmon, cooked: 208 kcal, P 20, C 0, F 13\n\nLean ground beef (≈10% fat), cooked: 217 kcal, P 26, C 0, F 12\n\nBlack beans, cooked: 132 kcal, P 8.9, C 23.7, F 0.5\n\nPotato, baked: 93 kcal, P 2.5, C 21, F 0.1\n\nLettuce/leafy salad: 15 kcal, P 1.4, C 2.9, F 0.2\n\nAvocado: 160 kcal, P 2, C 9, F 15\n\nBread (white): 265 kcal, P 9, C 49, F 3.2\n\nEgg, cooked: 155 kcal, P 13, C 1.1, F 11\n\nCheddar cheese: 403 kcal, P 25, C 1.3, F 33\n\nOlive oil: 884 kcal, P 0, C 0, F 100\n(If a food is not listed, pick the closest standard equivalent.)\n\nHidden oil & sauces: if pan-fried or visibly glossy, add ~1 tablespoon oil = 13.5 g = 120 kcal = 13.5 g fat per clearly coated serving; adjust by visual coverage.\n\nSum totals: compute grams per component × (per-100 g macros/energy) and add all components.\n\nValidation: enforce Calories ≈ 4×Protein + 4×Carbs + 9×Fat. If off by >8%, adjust fat first (oil/sauce most variable), then carbs (starches), keeping protein consistent with visible lean mass.\n\nRounding: round all final totals to integers. Never output ranges or decimals.\n\nOutput rules (must follow exactly)\n\nPlain text only.\n\nUse this exact structure and field order.\n\nValues are numbers only (no units, no “g” or “kcal”), no extra text, no JSON, no notes.\nfood name :[name]\nMeal Description: [short description]\nCalories: [number]\nProteins: [number]\nCarbs: [number]\nFat: [number]\nfood name 請使用中文來稱呼",
+        "inputType": "base64",
+        "binaryPropertyName": "files",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2240,
+        1072
+      ],
+      "id": "bfc7caca-8bb1-4729-bbfb-b856dc5265a6",
+      "name": "Analyze image1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        4368,
+        336
+      ],
+      "id": "70a0e1b2-4c40-4cba-908b-e889694cb31b",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2352,
+        528
+      ],
+      "id": "59085acb-503e-4f44-9924-3bfa213570d8",
+      "name": "OpenAI Chat Model",
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "Input Message Router1": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze image1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze image2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent報告",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Update Profile Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Report": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Meal Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Input Message Router1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Chat2": {
+      "main": [
+        []
+      ]
+    },
+    "Get ingredients Info": {
+      "ai_tool": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Input Message Router1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image2": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge (Append)": {
+      "main": [
+        [
+          {
+            "node": "Calculate Averages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Averages": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent報告": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent報告",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Get Meals Info1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Meals Info2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent報告",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cal IA Agent 儲存並同時報告紀錄內容": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Get Meals Info1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Cal IA Agent 儲存並同時報告紀錄內容",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Analyze image1": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent報告",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "d8b87287ac0ac42a553ec94f0aa3881c9bce7e5991b6f22ec07c4d8e2b78ce6a"
+  }
+}
