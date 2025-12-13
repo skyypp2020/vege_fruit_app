@@ -89661,7 +89661,7 @@ break}m.ah(new A.am1(m,d,c))
 e.rH(0,B.QZ)
 m.Qr()
 p=4
-l=A.aP8("POST",A.iA("https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e355"))
+l=A.aP8("POST",A.iA("https://www.chinglun.pro/webhook/e9919eb0-9661-4ca3-80da-2f1b611e98e3"))
 if(J.bP(d)!==0)l.x.m(0,"text",d)
 s=c!=null?7:8
 break
