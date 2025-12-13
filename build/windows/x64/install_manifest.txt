@@ -3,6 +3,7 @@ D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/final
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/file_selector_windows_plugin.dll
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/login_bg.png
+D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/zhijian.jpg
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
 D:/03-NCHU/02-104-1/02 - Internet of Things Applications and Data Analysis/finalproject/vege_fruit_app/build/windows/x64/runner/Debug/data/flutter_assets/kernel_blob.bin

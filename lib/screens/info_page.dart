@@ -52,7 +52,7 @@ class InfoPage extends StatelessWidget {
             _buildMemberItem('洪靖倫', 0, Colors.blueAccent),
             _buildMemberItem('羅雅馨', 1, Colors.pinkAccent),
             _buildMemberItem('楊竣博', 2, Colors.purpleAccent),
-            _buildMemberItem('林智堅', 3, Colors.deepOrangeAccent),
+            _buildMemberItem('林智堅', 3, Colors.deepOrangeAccent, imagePath: 'assets/images/zhijian.jpg'),
             
              const SizedBox(height: 40),
              const Center(child: Text("Designed with Flutter", style: TextStyle(color: Colors.grey))),
@@ -62,7 +62,7 @@ class InfoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMemberItem(String name, int index, Color color) {
+  Widget _buildMemberItem(String name, int index, Color color, {String? imagePath}) {
     bool isLeft = index % 2 == 0;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -72,7 +72,8 @@ class InfoPage extends StatelessWidget {
           name: name, 
           role: 'Member', 
           color: color, 
-          alignment: isLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end
+          alignment: isLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          imagePath: imagePath,
         ),
       ),
     );
@@ -83,9 +84,42 @@ class InfoPage extends StatelessWidget {
     required String role,
     required Color color,
     required CrossAxisAlignment alignment,
+    String? imagePath,
   }) {
+    // Determine content order based on alignment
+    // Left alignment: Image -> Text
+    // Right alignment: Text -> Image
+    final bool isLeft = alignment == CrossAxisAlignment.start;
+    
+    Widget imageWidget = imagePath != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Image.asset(
+              imagePath,
+              width: 60, // Slightly smaller to fit gracefully
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          )
+        : const SizedBox.shrink();
+
+    Widget textColumn = Column(
+      crossAxisAlignment: alignment,
+      children: [
+        Text(role.toUpperCase(),
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[400])),
+        const SizedBox(height: 4),
+        Text(
+          name,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+
     return Container(
-      width: 200,
+      // width: 200, // Remove fixed width to allow Row to expand naturally or use constraints
+      constraints: const BoxConstraints(minWidth: 180),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -98,21 +132,22 @@ class InfoPage extends StatelessWidget {
           ),
         ],
         border: Border(
-           left: alignment == CrossAxisAlignment.start ? BorderSide(color: color, width: 4) : BorderSide.none,
-           right: alignment == CrossAxisAlignment.end ? BorderSide(color: color, width: 4) : BorderSide.none,
+           left: isLeft ? BorderSide(color: color, width: 4) : BorderSide.none,
+           right: !isLeft ? BorderSide(color: color, width: 4) : BorderSide.none,
         )
       ),
-      child: Column(
-        crossAxisAlignment: alignment,
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // Wrap content
         children: [
-          Text(role.toUpperCase(),
-              style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[400])),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          if (imagePath != null && isLeft) ...[
+            imageWidget,
+            const SizedBox(width: 12),
+          ],
+          textColumn,
+          if (imagePath != null && !isLeft) ...[
+             const SizedBox(width: 12),
+             imageWidget,
+          ],
         ],
       ),
     );

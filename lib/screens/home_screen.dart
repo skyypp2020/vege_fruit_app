@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'info_page.dart';
 import 'camera_page.dart';
 import 'ask_ai_page.dart';
+import 'ask_ai_page_test.dart';
 import 'stats_page.dart';
 import 'login_screen.dart';
 
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     InfoPage(),
     AskAiPage(),
     StatsPage(),
+    AskAiPageTest(),
   ];
 
   void _onItemTapped(int index) {
@@ -90,6 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Statistics',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bug_report),
+            label: 'Test',
           ),
         ],
         currentIndex: _selectedIndex,
